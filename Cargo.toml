@@ -3,8 +3,13 @@ name = "urlencode"
 version = "0.1.0"
 authors = ["Vadim Polulyakh <bavadim@gmail.com>"]
 edition = "2018"
+license = "Apache-2.0"
+description = "A tool to perform percent-encoding (URL encoding)"
+readme = "README.md"
+keywords = ["url", "encoding"]
+categories = ["command-line-utilities"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 
 [dependencies]
 urlencoding = "1.1.1"
