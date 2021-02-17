@@ -5,8 +5,17 @@ use urlencoding::encode;
 use clap::{Arg, App};
 
 
-fn format(template: &str, subs: &str) -> String {
+fn sbs(template: &str, subs: &str) -> String {
     template.replace("{}", subs)
+}
+
+fn encode_line(text: &str, template: &str) -> String {
+    let s = sbs(template, text);
+    encode(&s)
+}
+
+fn print_line(line: &str) {
+    io::stdout().lock().write(format!("{}\n", line).as_bytes()).unwrap();
 }
 
 fn main() -> io::Result<()> {
@@ -25,11 +34,30 @@ fn main() -> io::Result<()> {
 
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
-        let s = encode(&line.unwrap());
-        let formatted = format(template, &s) + "\n";
+        let l = line.unwrap();
+        let formatted = encode_line(&l, template);
 
-        io::stdout().lock().write(formatted.as_bytes())?;
+        print_line(&formatted);
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{sbs, encode_line};
+
+    #[test]
+    fn format_works_correctly() {
+        assert_eq!(sbs("one {} three", "two"), "one two three");
+        assert_eq!(sbs("one {{}} three", "two"), "one {two} three");
+        assert_eq!(sbs("one {{}} {} three", "two"), "one {two} two three");
+        assert_eq!(sbs("one{{}}three", "two"), "one{two}three");
+    }
+
+    #[test]
+    fn encode_line_works_correctly() {
+        assert_eq!(encode_line("empty", "Hello Günter"), "Hello%20G%C3%BCnter");
+        assert_eq!(encode_line("не пусто", "Hello Günter/{}"), "Hello%20G%C3%BCnter%2F%D0%BD%D0%B5%20%D0%BF%D1%83%D1%81%D1%82%D0%BE");
+    }
 }
