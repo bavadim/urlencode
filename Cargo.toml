@@ -10,6 +10,7 @@ keywords = ["url", "encoding"]
 categories = ["command-line-utilities"]
 
 
-
 [dependencies]
 urlencoding = "1.1.1"
+#man = "0.3.0"
+clap = "2.33.3"
